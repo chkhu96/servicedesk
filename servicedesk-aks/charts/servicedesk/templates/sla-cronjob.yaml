@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sla-checker
+  labels: {{- include "sd.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.slaChecker.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels: { app: sla-checker, azure.workload.identity/use: "true" }
+        spec:
+          restartPolicy: OnFailure
+          {{- include "sd.podSpecCommon" . | nindent 10 }}
+          containers:
+            - name: sla-checker
+              image: {{ include "sd.image" (dict "root" . "name" "worker") }}
+              command: ["python", "-m", "worker.main", "sla-check"]
+              {{- include "sd.containerSecurity" . | nindent 14 }}
+              {{- include "sd.kvMount" . | nindent 14 }}

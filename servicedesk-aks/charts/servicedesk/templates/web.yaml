@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels: {{- include "sd.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.web.replicas }}
+  selector: { matchLabels: { app: web } }
+  template:
+    metadata:
+      labels: { app: web, azure.workload.identity/use: "true" }
+    spec:
+      {{- include "sd.podSpecCommon" . | nindent 6 }}
+      containers:
+        - name: web
+          image: {{ include "sd.image" (dict "root" . "name" "web") }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports: [ { containerPort: 8080 } ]
+          readinessProbe: { httpGet: { path: /healthz, port: 8080 }, periodSeconds: 10 }
+          livenessProbe: { httpGet: { path: /healthz, port: 8080 }, periodSeconds: 20 }
+          resources: {{- toYaml .Values.web.resources | nindent 12 }}
+          {{- include "sd.containerSecurity" . | nindent 10 }}
+          {{- include "sd.kvMount" . | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  labels: {{- include "sd.labels" . | nindent 4 }}
+spec:
+  selector: { app: web }
+  ports: [ { name: http, port: 80, targetPort: 8080 } ]

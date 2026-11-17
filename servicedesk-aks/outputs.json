@@ -1,0 +1,42 @@
+{
+  "acrLoginServer": {
+    "type": "String",
+    "value": "sdlabacr2azkrb4mjjije.azurecr.io"
+  },
+  "acrName": {
+    "type": "String",
+    "value": "sdlabacr2azkrb4mjjije"
+  },
+  "aksName": {
+    "type": "String",
+    "value": "sdlab-aks"
+  },
+  "appDnsZone": {
+    "type": "String",
+    "value": "lab.internal"
+  },
+  "bastionName": {
+    "type": "String",
+    "value": "sdlab-bastion"
+  },
+  "jumpboxVmId": {
+    "type": "String",
+    "value": "/subscriptions/32290fb0-2ea9-47ec-81e8-5e3b3b7295ad/resourceGroups/rg-servicedesk-lab/providers/Microsoft.Compute/virtualMachines/sdlab-jumpbox"
+  },
+  "keyVaultName": {
+    "type": "String",
+    "value": "sdlab-kv-2azkrb4mjjije"
+  },
+  "sqlServerFqdn": {
+    "type": "String",
+    "value": "sdlab-sql-2azkrb4mjjije.database.windows.net"
+  },
+  "tenantId": {
+    "type": "String",
+    "value": "bd41002d-92fa-452e-8bb3-7adad830b4b5"
+  },
+  "workloadClientId": {
+    "type": "String",
+    "value": "e980cde1-9ba3-4de5-a613-add070a1c001"
+  }
+}

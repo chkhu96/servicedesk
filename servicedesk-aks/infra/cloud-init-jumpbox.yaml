@@ -1,0 +1,16 @@
+#cloud-config
+package_update: true
+packages:
+  - docker.io
+  - git
+  - jq
+  - curl
+  - openssl
+  - unzip
+runcmd:
+  - usermod -aG docker azureuser
+  - systemctl enable --now docker
+  - curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+  - az aks install-cli   # kubectl + kubelogin
+  - curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  - echo "jumpbox tooling ready" > /var/log/jumpbox-ready

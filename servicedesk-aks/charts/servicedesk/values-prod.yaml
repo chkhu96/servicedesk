@@ -1,0 +1,5 @@
+web: { replicas: 2 }
+ticketApi:
+  replicas: 2
+  hpa: { enabled: true, minReplicas: 2, maxReplicas: 6, cpu: 60 }
+reportApi: { replicas: 2 }

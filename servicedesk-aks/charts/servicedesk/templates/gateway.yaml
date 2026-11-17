@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: servicedesk-gw
+  labels: {{- include "sd.labels" . | nindent 4 }}
+spec:
+  gatewayClassName: {{ .Values.gateway.className }}
+  {{- if .Values.gateway.internal }}
+  infrastructure:
+    annotations:
+      # propagated to the generated LoadBalancer Service -> Azure internal LB (private IP in snet-aks)
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  {{- end }}
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: {{ .Values.gateway.hostname | quote }}
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: {{ .Values.gateway.tlsSecretName }}
+      allowedRoutes:
+        namespaces: { from: Same }

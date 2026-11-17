@@ -1,0 +1,40 @@
+# Values filled by scripts/05-helm-install.sh from IaC outputs
+image:
+  registry: ""          # e.g. sdlabacrxxxx.azurecr.io
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+azure:
+  tenantId: ""
+  workloadClientId: ""  # user-assigned identity federated to the service account
+  keyVaultName: ""
+
+serviceAccount:
+  name: servicedesk-sa  # must match the federated credential subject in IaC
+
+gateway:
+  className: approuting-istio
+  hostname: servicedesk.lab.internal
+  internal: true
+  tlsSecretName: servicedesk-tls
+  kvCertName: servicedesk-tls   # Key Vault certificate name
+
+web:
+  replicas: 2
+  resources: { requests: { cpu: 50m, memory: 64Mi }, limits: { memory: 128Mi } }
+
+ticketApi:
+  replicas: 2
+  resources: { requests: { cpu: 100m, memory: 128Mi }, limits: { memory: 256Mi } }
+  hpa: { enabled: true, minReplicas: 2, maxReplicas: 5, cpu: 70 }
+
+reportApi:
+  replicas: 1
+  version: v1
+  resources: { requests: { cpu: 100m, memory: 128Mi }, limits: { memory: 256Mi } }
+
+slaChecker:
+  schedule: "*/15 * * * *"
+
+migration:
+  enabled: true

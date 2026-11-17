@@ -1,0 +1,6 @@
+apiVersion: v2
+name: servicedesk
+description: Ticketing Lite - learning app for private AKS (Gateway API via app routing Istio, Key Vault CSI, Azure SQL)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

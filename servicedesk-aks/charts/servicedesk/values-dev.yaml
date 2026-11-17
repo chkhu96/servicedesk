@@ -1,0 +1,5 @@
+web: { replicas: 1 }
+ticketApi:
+  replicas: 1
+  hpa: { enabled: false }
+slaChecker: { schedule: "*/5 * * * *" }

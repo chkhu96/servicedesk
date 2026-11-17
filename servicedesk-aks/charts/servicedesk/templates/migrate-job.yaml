@@ -1,0 +1,26 @@
+{{- if .Values.migration.enabled }}
+# post-install/upgrade hook: runs after SA + SecretProviderClass exist.
+# APIs stay NotReady (/readyz) until the schema exists - watch this happen.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrate
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      labels: { app: db-migrate, azure.workload.identity/use: "true" }
+    spec:
+      restartPolicy: OnFailure
+      {{- include "sd.podSpecCommon" . | nindent 6 }}
+      containers:
+        - name: migrate
+          image: {{ include "sd.image" (dict "root" . "name" "worker") }}
+          command: ["python", "-m", "worker.main", "migrate"]
+          {{- include "sd.containerSecurity" . | nindent 10 }}
+          {{- include "sd.kvMount" . | nindent 10 }}
+{{- end }}
